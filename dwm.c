@@ -146,6 +146,7 @@ struct Client {
 
 typedef struct {
 	unsigned int mod;
+    KeySym chain;
 	KeySym keysym;
 	void (*func)(const Arg *);
 	const Arg arg;
@@ -366,6 +367,7 @@ static Display *dpy;
 static Drw *drw;
 static Monitor *mons, *selmon;
 static Window root, wmcheckwin;
+static KeySym keychain = -1;
 
 static xcb_connection_t *xcon;
 
@@ -1288,24 +1290,35 @@ grabkeys(void)
 		unsigned int modifiers[] = { 0, LockMask, numlockmask, numlockmask|LockMask };
 		int start, end, skip;
 		KeySym *syms;
+		KeyCode code;
 
 		XUngrabKey(dpy, AnyKey, AnyModifier, root);
 		XDisplayKeycodes(dpy, &start, &end);
 		syms = XGetKeyboardMapping(dpy, start, end - start + 1, &skip);
 		if (!syms)
 			return;
-		for (k = start; k <= end; k++)
-			for (i = 0; i < LENGTH(keys); i++)
+
+		for (k = start; k <= end; k++) {
+			for (i = 0; i < LENGTH(keys); i++) {
 				/* skip modifier codes, we do that ourselves */
-				if (keys[i].keysym == syms[(k - start) * skip])
-					for (j = 0; j < LENGTH(modifiers); j++)
-						XGrabKey(dpy, k,
-							 keys[i].mod | modifiers[j],
-							 root, True,
-							 GrabModeAsync, GrabModeAsync);
+				if (keys[i].keysym == syms[(k - start) * skip]) {
+					KeySym grab_sym = (keys[i].chain != NoSymbol) ? keys[i].chain : keys[i].keysym;
+					code = XKeysymToKeycode(dpy, grab_sym);
+					if (code) {
+						for (j = 0; j < LENGTH(modifiers); j++) {
+							XGrabKey(dpy, code,
+							         keys[i].mod | modifiers[j],
+							         root, True,
+							         GrabModeAsync, GrabModeAsync);
+						}
+					}
+				}
+			}
+		}
 		XFree(syms);
 	}
 }
+
 
 void
 incnmaster(const Arg *arg)
@@ -1329,17 +1342,37 @@ isuniquegeom(XineramaScreenInfo *unique, size_t n, XineramaScreenInfo *info)
 void
 keypress(XEvent *e)
 {
-	unsigned int i;
+	unsigned int i, j;
 	KeySym keysym;
 	XKeyEvent *ev;
+	int current = 0;
+	unsigned int modifiers[] = { 0, LockMask, numlockmask, numlockmask|LockMask };
 
 	ev = &e->xkey;
 	keysym = XKeycodeToKeysym(dpy, (KeyCode)ev->keycode, 0);
-	for (i = 0; i < LENGTH(keys); i++)
-		if (keysym == keys[i].keysym
-		&& CLEANMASK(keys[i].mod) == CLEANMASK(ev->state)
-		&& keys[i].func)
+	for (i = 0; i < LENGTH(keys); i++) {
+		if (keysym == keys[i].keysym && keys[i].chain == -1
+				&& CLEANMASK(keys[i].mod) == CLEANMASK(ev->state)
+				&& keys[i].func)
 			keys[i].func(&(keys[i].arg));
+		else if (keysym == keys[i].chain && keychain == -1
+				&& CLEANMASK(keys[i].mod) == CLEANMASK(ev->state)
+				&& keys[i].func) {
+			current = 1;
+			keychain = keysym;
+			for (j = 0; j < LENGTH(modifiers); j++)
+				XGrabKey(dpy, AnyKey, 0 | modifiers[j], root,
+						True, GrabModeAsync, GrabModeAsync);
+		} else if (!current && keysym == keys[i].keysym
+				&& keychain != -1
+				&& keys[i].chain == keychain
+				&& keys[i].func)
+			keys[i].func(&(keys[i].arg));
+	}
+	if (!current) {
+		keychain = -1;
+		grabkeys();
+	}
 }
 
 void

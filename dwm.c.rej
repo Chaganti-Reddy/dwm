@@ -1,37 +1,22 @@
 --- dwm.c
 +++ dwm.c
-@@ -49,7 +49,7 @@
- #define CLEANMASK(mask)         (mask & ~(numlockmask|LockMask) & (ShiftMask|ControlMask|Mod1Mask|Mod2Mask|Mod3Mask|Mod4Mask|Mod5Mask))
- #define INTERSECT(x,y,w,h,m)    (MAX(0, MIN((x)+(w),(m)->wx+(m)->ww) - MAX((x),(m)->wx)) \
-                                * MAX(0, MIN((y)+(h),(m)->wy+(m)->wh) - MAX((y),(m)->wy)))
--#define ISVISIBLE(C)            ((C->tags & C->mon->tagset[C->mon->seltags]))
-+#define ISVISIBLE(C)            ((C->tags & C->mon->tagset[C->mon->seltags]) || C->issticky)
- #define LENGTH(X)               (sizeof X / sizeof X[0])
- #define MOUSEMASK               (BUTTONMASK|PointerMotionMask)
- #define WIDTH(X)                ((X)->w + 2 * (X)->bw)
-@@ -61,7 +61,7 @@
- enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
- enum { SchemeNorm, SchemeSel }; /* color schemes */
- enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
--       NetWMFullscreen, NetActiveWindow, NetWMWindowType,
-+       NetWMFullscreen, NetWMSticky, NetActiveWindow, NetWMWindowType,
-        NetWMWindowTypeDialog, NetClientList, NetLast }; /* EWMH atoms */
- enum { WMProtocols, WMDelete, WMState, WMTakeFocus, WMLast }; /* default atoms */
- enum { ClkTagBar, ClkLtSymbol, ClkStatusText, ClkWinTitle,
-@@ -92,7 +92,7 @@ struct Client {
- 	int basew, baseh, incw, inch, maxw, maxh, minw, minh, hintsvalid;
- 	int bw, oldbw;
- 	unsigned int tags;
--	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen;
-+	int isfixed, isfloating, isurgent, neverfocus, oldstate, isfullscreen, issticky;
- 	Client *next;
- 	Client *snext;
- 	Monitor *mon;
-@@ -212,6 +213,7 @@ static void tagmon(const Arg *arg);
- static void tile(Monitor *m);
- static void togglebar(const Arg *arg);
- static void togglefloating(const Arg *arg);
-+static void togglesticky(const Arg *arg);
- static void toggletag(const Arg *arg);
- static void toggleview(const Arg *arg);
- static void unfocus(Client *c, int setfocus);
+@@ -956,13 +958,18 @@ grabkeys(void)
+ 		unsigned int i, j;
+ 		unsigned int modifiers[] = { 0, LockMask, numlockmask, numlockmask|LockMask };
+ 		KeyCode code;
++		KeyCode chain;
+ 
+ 		XUngrabKey(dpy, AnyKey, AnyModifier, root);
+ 		for (i = 0; i < LENGTH(keys); i++)
+-			if ((code = XKeysymToKeycode(dpy, keys[i].keysym)))
++			if ((code = XKeysymToKeycode(dpy, keys[i].keysym))) {
++				if (keys[i].chain != -1 &&
++					((chain = XKeysymToKeycode(dpy, keys[i].chain))))
++						code = chain;
+ 				for (j = 0; j < LENGTH(modifiers); j++)
+ 					XGrabKey(dpy, code, keys[i].mod | modifiers[j], root,
+ 						True, GrabModeAsync, GrabModeAsync);
++			}
+ 	}
+ }
+ 

@@ -5,6 +5,7 @@
 /* appearance */
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
+static const int swallowfloating    = 0;        /* 1 means swallow floating windows by default */
 static const unsigned int gappih    = 07;       /* horiz inner gap between windows */
 static const unsigned int gappiv    = 07;       /* vert inner gap between windows */
 static const unsigned int gappoh    = 05;       /* horiz outer gap between windows and screen edge */
@@ -35,14 +36,22 @@ typedef struct {
 	const char *name;
 	const void *cmd;
 } Sp;
-const char *spcmd1[] = {"st", "-n", "spterm", "-g", "120x34", NULL };
-const char *spcmd2[] = {"st", "-n", "spfm", "-g", "144x41", "-e", "ranger", NULL };
-const char *spcmd3[] = {"keepassxc", NULL };
+
+const char *spcmd1[] = {"st", "-n", "spterm", "-g", "120x34", NULL};
+const char *spcmd2[] = {"st", "-n", "spmusic", "-g", "120x34", "-e", "/home/karna/.ncmpcpp/scripts/ncmpcpp-art", NULL};
+const char *spcmd3[] = {"qalculate-gtk", NULL};
+const char *spcmd4[] = {
+    "st", "-n",     "spnews", "-f",       "Iosevka Nerd Font:weight=bold:size=12",
+    "-g", "120x34", "-e",     "newsboat", NULL};
+const char *spcmd5[] = {"st", "-n", "spchess", "-g", "135x35", "-e", "/home/karna/apps/chess-linux-x64/chess", NULL};
+
 static Sp scratchpads[] = {
-	/* name          cmd  */
-	{"spterm",      spcmd1},
-	{"spranger",    spcmd2},
-	{"keepassxc",   spcmd3},
+    /* name          cmd  */
+    {"spterm"   ,    spcmd1}, 
+    {"spmusic"  ,    spcmd2}, 
+    {"spcal"    ,    spcmd3},
+    {"spgpt"    ,    spcmd4},  
+    {"spnews"   ,    spcmd5},
 };
 
 /* tagging */
@@ -51,17 +60,37 @@ static const char *tagsalt[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 static const int momentaryalttags = 0; /* 1 means alttags will show only when key is held down*/
 
 static const Rule rules[] = {
-	/* xprop(1):
-	 *	WM_CLASS(STRING) = instance, class
-	 *	WM_NAME(STRING) = title
-	 */
-	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Gimp",	  NULL,			NULL,		0,				1,			 -1 },
-	{ "Firefox",  NULL,			NULL,		1 << 8,			0,			 -1 },
-	{ NULL,		  "spterm",		NULL,		SPTAG(0),		1,			 -1 },
-	{ NULL,		  "spfm",		NULL,		SPTAG(1),		1,			 -1 },
-	{ NULL,		  "keepassxc",	NULL,		SPTAG(2),		0,			 -1 },
+	/* class              instance        title           tags mask     isfloating  isterminal  noswallow  monitor  floatx  floaty  floatw  floath  floatborderpx */
+	{ "Gimp",             NULL,           NULL,           1 << 4,       0,          0,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "Firefox",          NULL,           NULL,           1 << 7,       0,          0,          0,         -1,      0,      0,      0,      0,      0 },
+
+	{ "TelegramDesktop",  NULL,           NULL,           0,            1,          0,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "Pavucontrol",      NULL,           NULL,           0,            1,          0,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "Blueman-manager",  NULL,           NULL,           0,            1,          0,          0,         -1,      0,      0,      800,    800,    0 },
+	{ "baobab",           NULL,           NULL,           0,            1,          0,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "qBittorrent",      NULL,           NULL,           1 << 5,       0,          0,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "pinentry-qt",      NULL,           NULL,           0,            1,          0,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "Qalculate-gtk",    NULL,           NULL,           0,            1,          0,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "chess-nativefier-703820", NULL,    NULL,           0,            1,          0,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "Gnome-disks",      NULL,           NULL,           0,            1,          0,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "Nm-connection-editor", NULL,       NULL,           0,            1,          0,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "flameshot",        NULL,           NULL,           0,            1,          0,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "obs",              NULL,           NULL,           1 << 7,       1,          0,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "Brave-browser",    NULL,           NULL,           1 << 1,       0,          0,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "Vivaldi-stable",   NULL,           NULL,           1 << 1,       0,          0,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "discord",          NULL,           NULL,           1 << 5,       0,          0,          0,         -1,      0,      0,      0,      0,      0 },
+
+	{ "St",               NULL,           NULL,           0,            0,          1,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "kitty",            NULL,           NULL,           0,            0,          1,          0,         -1,      0,      0,      0,      0,      0 },
+	{ NULL,               NULL,           "Event Tester", 0,            0,          0,          1,         -1,      0,      0,      0,      0,      0 },
+
+	{ NULL,               "spterm",       NULL,           SPTAG(0),     1,          1,          0,         -1,      200,    200,    800,    600,    4 },
+	{ NULL,               "spmusic",      NULL,           SPTAG(1),     1,          1,          0,         -1,      300,    200,    900,    600,    4 },
+	{ "Qalculate-gtk",    NULL,           NULL,           SPTAG(2),     1,          0,          0,         -1,      350,    250,    600,    400,    4 },
+	{ NULL,               "spnews",       NULL,           SPTAG(3),     1,          1,          0,         -1,      400,    300,    900,    600,    4 },
+	{ NULL,               "spchess",      NULL,           SPTAG(4),     1,          1,          0,         -1,      450,    350,    1000,   700,    4 },
 };
+
 
 /* layout(s) */
 static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
@@ -146,7 +175,7 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
-	{ MODKEY|ControlMask,		XK_comma,  cyclelayout,    {.i = -1 } },
+	{ MODKEY|ControlMask,		        XK_comma,  cyclelayout,    {.i = -1 } },
 	{ MODKEY|ControlMask,           XK_period, cyclelayout,    {.i = +1 } },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
@@ -159,9 +188,6 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
 	{ MODKEY,                       XK_F5,     xrdb,           {.v = NULL } },
 	{ MODKEY,                       XK_n,      togglealttag,   {0} },
-	{ MODKEY,            			      XK_y,  	   togglescratch,  {.ui = 0 } },
-	{ MODKEY,            			      XK_u,	     togglescratch,  {.ui = 1 } },
-	{ MODKEY,            			      XK_x,	     togglescratch,  {.ui = 2 } },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
@@ -172,7 +198,14 @@ static const Key keys[] = {
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
-	{ MODKEY|ControlMask|ShiftMask, XK_q,      quit,           {1} }, 
+	{ MODKEY|ShiftMask,             XK_r,      quit,           {1} }, 
+
+  // Scratchpads
+  { 0,                            XK_F12,    togglescratch,          {.ui = 0} },
+  { MODKEY|ShiftMask,             XK_m,      togglescratch,          {.ui = 1} },
+  { MODKEY,                       XK_c,      togglescratch,          {.ui = 2} },
+  { MODKEY|Mod1Mask,              XK_n,      togglescratch,          {.ui = 3} },
+//  { 0,                            XK_F11,    togglescratch,          {.ui = 4} },
 };
 
 /* button definitions */

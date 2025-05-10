@@ -18,8 +18,8 @@ static const int systraypinningfailfirst = 1;   /* 1: if pinning fails, display 
 static const int showsystray        = 1;        /* 0 means no systray */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "monospace:size=10" };
-static const char dmenufont[]       = "monospace:size=10";
+static const char *fonts[]          = { "Iosevka Nerd Font:weight=bold:size=11:antialias=true:hinting=true", "NotoColorEmoji:pixelsize=11:antialias=true:autohint=true", };
+static const char dmenufont[]       = "Iosevka Nerd Font:size=12:weight=bold";
 static char normbgcolor[]           = "#222222";
 static char normbordercolor[]       = "#444444";
 static char normfgcolor[]           = "#bbbbbb";
@@ -36,38 +36,62 @@ typedef struct {
 	const char *name;
 	const void *cmd;
 } Sp;
-const char *spcmd1[] = {"st", "-n", "spterm", "-g", "120x34", NULL };
-const char *spcmd2[] = {"st", "-n", "spfm", "-g", "144x41", "-e", "yazi", NULL };
-const char *spcmd3[] = {"keepassxc", NULL };
+
+const char *spcmd1[] = {"st", "-n", "spterm", "-g", "120x34", NULL};
+const char *spcmd2[] = {"st", "-n", "spmusic", "-g", "120x34", "-e", "/home/karna/.ncmpcpp/scripts/ncmpcpp-art", NULL};
+const char *spcmd3[] = {"qalculate-gtk", NULL};
+const char *spcmd4[] = {"st", "-n",     "spnews", "-f",       "Iosevka Nerd Font:weight=bold:size=12", "-g", "120x34", "-e",     "newsboat", NULL};
+const char *spcmd5[] = {"st", "-n", "spchess", "-g", "135x35", "-e", "/home/karna/apps/chess-linux-x64/chess", NULL};
+
 static Sp scratchpads[] = {
-	/* name          cmd  */
-	{"spterm",      spcmd1},
-	{"spranger",    spcmd2},
-	{"keepassxc",   spcmd3},
+    /* name          cmd  */
+    {"spterm"   ,    spcmd1}, 
+    {"spmusic"  ,    spcmd2}, 
+    {"spcal"    ,    spcmd3},
+    {"spgpt"    ,    spcmd4},  
+    {"spnews"   ,    spcmd5},
 };
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
-static const char *tagsalt[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+static const char *tags[]         = { "", "", "", "","", "","", "", "" };
+static const char *tagsalt[]      = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 static const int momentaryalttags = 0; /* 1 means alttags will show only when key is held down*/
 
 static const Rule rules[] = {
-	/* xprop(1):
-	 *	WM_CLASS(STRING) = instance, class
-	 *	WM_NAME(STRING) = title
-	 */
-	/* class     instance  title           tags mask  isfloating  isterminal  noswallow  monitor */
-	{ "Gimp",    NULL,     NULL,           0,         1,          0,           0,        -1 },
-	{ "Firefox", NULL,     NULL,           1 << 8,    0,          0,          -1,        -1 },
-	{ "St",      NULL,     NULL,           0,         0,          1,           0,        -1 },
-  { NULL,     "spterm",  NULL,           SPTAG(0),         1,          1,           0,        -1 },
-  { NULL,     "spfm",    NULL,           SPTAG(1),         1,          1,           0,        -1 },
-  { NULL,    "keepassxc",NULL,           SPTAG(2),         1,          1,           0,        -1 },
-	{ NULL,      NULL,     "Event Tester", 0,         0,          0,           1,        -1 }, /* xev */
+	/* class              instance        title           tags mask     isfloating  isterminal  noswallow  monitor  floatx  floaty  floatw  floath  floatborderpx */
+	{ "Gimp",             NULL,           NULL,           1 << 4,       0,          0,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "Firefox",          NULL,           NULL,           1 << 7,       0,          0,          0,         -1,      0,      0,      0,      0,      0 },
+
+	{ "TelegramDesktop",  NULL,           NULL,           0,            1,          0,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "Pavucontrol",      NULL,           NULL,           0,            1,          0,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "Blueman-manager",  NULL,           NULL,           0,            1,          0,          0,         -1,      0,      0,      800,    800,    0 },
+	{ "baobab",           NULL,           NULL,           0,            1,          0,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "qBittorrent",      NULL,           NULL,           1 << 5,       0,          0,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "pinentry-qt",      NULL,           NULL,           0,            1,          0,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "Qalculate-gtk",    NULL,           NULL,           0,            1,          0,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "chess-nativefier-703820", NULL,    NULL,           0,            1,          0,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "Gnome-disks",      NULL,           NULL,           0,            1,          0,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "Nm-connection-editor", NULL,       NULL,           0,            1,          0,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "flameshot",        NULL,           NULL,           0,            1,          0,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "obs",              NULL,           NULL,           1 << 7,       1,          0,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "Brave-browser",    NULL,           NULL,           1 << 1,       0,          0,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "Vivaldi-stable",   NULL,           NULL,           1 << 1,       0,          0,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "discord",          NULL,           NULL,           1 << 5,       0,          0,          0,         -1,      0,      0,      0,      0,      0 },
+
+	{ "St",               NULL,           NULL,           0,            0,          1,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "kitty",            NULL,           NULL,           0,            0,          1,          0,         -1,      0,      0,      0,      0,      0 },
+	{ NULL,               NULL,           "Event Tester", 0,            0,          0,          1,         -1,      0,      0,      0,      0,      0 },
+
+	{ NULL,               "spterm",       NULL,           SPTAG(0),     1,          1,          0,         -1,      200,    200,    800,    600,    4 },
+	{ NULL,               "spmusic",      NULL,           SPTAG(1),     1,          1,          0,         -1,      300,    200,    900,    600,    4 },
+	{ "Qalculate-gtk",    NULL,           NULL,           SPTAG(2),     1,          0,          0,         -1,      350,    250,    600,    400,    4 },
+	{ NULL,               "spnews",       NULL,           SPTAG(3),     1,          1,          0,         -1,      400,    300,    900,    600,    4 },
+	{ NULL,               "spchess",      NULL,           SPTAG(4),     1,          1,          0,         -1,      450,    350,    1000,   700,    4 },
 };
 
+
 /* layout(s) */
-static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
+static const float mfact     = 0.50; /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
 static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
@@ -77,10 +101,10 @@ static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen win
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
-	{ "[]=",      tile },    /* first entry is default */
+	{ "[\\]",     dwindle }, /* first entry is default */
+	{ "[]=",      tile },    
 	{ "[M]",      monocle },
 	{ "[@]",      spiral },
-	{ "[\\]",     dwindle },
 	{ "H[]",      deck },
 	{ "TTT",      bstack },
 	{ "===",      bstackhoriz },
@@ -107,19 +131,20 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, NULL };
+static char dmenuprompt[] = "Search: ";
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-l", "10", "-p", dmenuprompt, NULL };
 static const char *termcmd[]  = { "st", NULL };
 
 #include "movestack.c"
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
-	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
-	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
+	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
+	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
 	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
-	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
+	{ MODKEY,                       XK_p,      incnmaster,     {.i = -1 } },
 	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
 	{ MODKEY|ShiftMask,             XK_h,      setcfact,       {.f = +0.25} },
@@ -127,7 +152,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_o,      setcfact,       {.f =  0.00} },
 	{ MODKEY|ShiftMask,             XK_j,      movestack,      {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_k,      movestack,      {.i = -1 } },
-	{ MODKEY,                       XK_Return, zoom,           {0} },
+	{ MODKEY|ShiftMask,             XK_Return, zoom,           {0} },
 	{ MODKEY|Mod1Mask,              XK_u,      incrgaps,       {.i = +1 } },
 	{ MODKEY|Mod1Mask|ShiftMask,    XK_u,      incrgaps,       {.i = -1 } },
 	{ MODKEY|Mod1Mask,              XK_i,      incrigaps,      {.i = +1 } },
@@ -162,9 +187,6 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
 	{ MODKEY,                       XK_F5,     xrdb,           {.v = NULL } },
 	{ MODKEY,                       XK_n,      togglealttag,   {0} },
-	{ MODKEY,            			      XK_y,  	   togglescratch,  {.ui = 0 } },
-	{ MODKEY,            			      XK_u,	     togglescratch,  {.ui = 1 } },
-	{ MODKEY,            			      XK_x,	     togglescratch,  {.ui = 2 } },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
@@ -175,7 +197,15 @@ static const Key keys[] = {
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
-	{ MODKEY|ControlMask|ShiftMask, XK_q,      quit,           {1} }, 
+	{ MODKEY|ShiftMask,             XK_r,      quit,           {1} }, 
+	{ MODKEY,                       XK_s,      togglesticky,   {0} },
+
+  // Scratchpads
+  { 0,                            XK_F12,    togglescratch,          {.ui = 0} },
+  { MODKEY|ShiftMask,             XK_m,      togglescratch,          {.ui = 1} },
+  { MODKEY,                       XK_c,      togglescratch,          {.ui = 2} },
+  { MODKEY|Mod1Mask,              XK_n,      togglescratch,          {.ui = 3} },
+//  { 0,                            XK_F11,    togglescratch,          {.ui = 4} },
 };
 
 /* button definitions */

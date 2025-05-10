@@ -59,36 +59,35 @@ static const int momentaryalttags = 0; /* 1 means alttags will show only when ke
 
 static const Rule rules[] = {
 	/* class              instance        title           tags mask     isfloating  isterminal  noswallow  monitor  floatx  floaty  floatw  floath  floatborderpx */
-	{ "Gimp",             NULL,           NULL,           1 << 4,       0,          0,          0,         -1,      0,      0,      0,      0,      0 },
-	{ "Firefox",          NULL,           NULL,           1 << 7,       0,          0,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "Gimp",             NULL,           NULL,           1 << 4,       0,          0,          0,         -1,      -1,     -1,     -1,     -1,     -1 },
+	{ "Firefox",          NULL,           NULL,           1 << 7,       0,          0,          0,         -1,      -1,     -1,     -1,     -1,     -1 },
 
-	{ "TelegramDesktop",  NULL,           NULL,           0,            1,          0,          0,         -1,      0,      0,      0,      0,      0 },
-	{ "Pavucontrol",      NULL,           NULL,           0,            1,          0,          0,         -1,      0,      0,      0,      0,      0 },
-	{ "Blueman-manager",  NULL,           NULL,           0,            1,          0,          0,         -1,      0,      0,      800,    800,    0 },
-	{ "baobab",           NULL,           NULL,           0,            1,          0,          0,         -1,      0,      0,      0,      0,      0 },
-	{ "qBittorrent",      NULL,           NULL,           1 << 5,       0,          0,          0,         -1,      0,      0,      0,      0,      0 },
-	{ "pinentry-qt",      NULL,           NULL,           0,            1,          0,          0,         -1,      0,      0,      0,      0,      0 },
-	{ "Qalculate-gtk",    NULL,           NULL,           0,            1,          0,          0,         -1,      0,      0,      0,      0,      0 },
-	{ "chess-nativefier-703820", NULL,    NULL,           0,            1,          0,          0,         -1,      0,      0,      0,      0,      0 },
-	{ "Gnome-disks",      NULL,           NULL,           0,            1,          0,          0,         -1,      0,      0,      0,      0,      0 },
-	{ "Nm-connection-editor", NULL,       NULL,           0,            1,          0,          0,         -1,      0,      0,      0,      0,      0 },
-	{ "flameshot",        NULL,           NULL,           0,            1,          0,          0,         -1,      0,      0,      0,      0,      0 },
-	{ "obs",              NULL,           NULL,           1 << 7,       1,          0,          0,         -1,      0,      0,      0,      0,      0 },
-	{ "Brave-browser",    NULL,           NULL,           1 << 1,       0,          0,          0,         -1,      0,      0,      0,      0,      0 },
-	{ "Vivaldi-stable",   NULL,           NULL,           1 << 1,       0,          0,          0,         -1,      0,      0,      0,      0,      0 },
-	{ "discord",          NULL,           NULL,           1 << 5,       0,          0,          0,         -1,      0,      0,      0,      0,      0 },
+	{ "TelegramDesktop",  NULL,           NULL,           0,            1,          0,          0,         -1,      -1,     -1,     -1,     -1,     -1 },
+	{ "Pavucontrol",      NULL,           NULL,           0,            1,          0,          0,         -1,      -1,     -1,     -1,     -1,     -1 },
+	{ "Blueman-manager",  NULL,           NULL,           0,            1,          0,          0,         -1,      -1,     -1,     800,    800,    -1 },
+	{ "baobab",           NULL,           NULL,           0,            1,          0,          0,         -1,      -1,     -1,     -1,     -1,     -1 },
+	{ "qBittorrent",      NULL,           NULL,           1 << 5,       0,          0,          0,         -1,      -1,     -1,     -1,     -1,     -1 },
+	{ "pinentry-qt",      NULL,           NULL,           0,            1,          0,          0,         -1,      -1,     -1,     -1,     -1,     -1 },
+	{ "Qalculate-gtk",    NULL,           NULL,           0,            1,          0,          0,         -1,      -1,     -1,     -1,     -1,     -1 },
+	{ "chess-nativefier-703820", NULL,    NULL,           0,            1,          0,          0,         -1,      -1,     -1,     -1,     -1,     -1 },
+	{ "Gnome-disks",      NULL,           NULL,           0,            1,          0,          0,         -1,      -1,     -1,     -1,     -1,     -1 },
+//	{ "Nm-connection-editor", NULL,       NULL,           0,            1,          0,          0,         -1,      -1,     -1,     -1,     -1,     -1 },
+	{ "flameshot",        NULL,           NULL,           0,            1,          0,          0,         -1,      -1,     -1,     -1,     -1,     -1 },
+	{ "obs",              NULL,           NULL,           1 << 7,       1,          0,          0,         -1,      -1,     -1,     -1,     -1,     -1 },
+	{ "Brave-browser",    NULL,           NULL,           1 << 1,       0,          0,          0,         -1,      -1,     -1,     -1,     -1,     -1 },
+	{ "Vivaldi-stable",   NULL,           NULL,           1 << 1,       0,          0,          0,         -1,      -1,     -1,     -1,     -1,     -1 },
+	{ "discord",          NULL,           NULL,           1 << 5,       0,          0,          0,         -1,      -1,     -1,     -1,     -1,     -1 },
 
-	{ "St",               NULL,           NULL,           0,            0,          1,          0,         -1,      0,      0,      0,      0,      0 },
-	{ "kitty",            NULL,           NULL,           0,            0,          1,          0,         -1,      0,      0,      0,      0,      0 },
-	{ NULL,               NULL,           "Event Tester", 0,            0,          0,          1,         -1,      0,      0,      0,      0,      0 },
+	{ "St",               NULL,           NULL,           0,            0,          1,          0,         -1,      -1,     -1,     -1,     -1,     -1 },
+	{ "kitty",            NULL,           NULL,           0,            0,          1,          0,         -1,      -1,     -1,     -1,     -1,     -1 },
+	{ NULL,               NULL,           "Event Tester", 0,            0,          0,          1,         -1,      -1,     -1,     -1,     -1,     -1 },
 
-	{ NULL,               "spterm",       NULL,           SPTAG(0),     1,          1,          0,         -1,      200,    200,    800,    600,    4 },
-	{ NULL,               "spmusic",      NULL,           SPTAG(1),     1,          1,          0,         -1,      300,    200,    900,    600,    4 },
-	{ "Qalculate-gtk",    NULL,           NULL,           SPTAG(2),     1,          0,          0,         -1,      350,    250,    600,    400,    4 },
-	{ NULL,               "spnews",       NULL,           SPTAG(3),     1,          1,          0,         -1,      400,    300,    900,    600,    4 },
-	{ NULL,               "spchess",      NULL,           SPTAG(4),     1,          1,          0,         -1,      450,    350,    1000,   700,    4 },
+	{ NULL,               "spterm",       NULL,           SPTAG(0),     1,          1,          0,         -1,      -1,     -1,     -1,     -1,     -1 },
+	{ NULL,               "spmusic",      NULL,           SPTAG(1),     1,          1,          0,         -1,      -1,     -1,     -1,     -1,     -1 },
+	{ "Qalculate-gtk",    NULL,           NULL,           SPTAG(2),     1,          0,          0,         -1,      -1,     -1,     -1,     -1,     -1 },
+	{ NULL,               "spnews",       NULL,           SPTAG(3),     1,          1,          0,         -1,      -1,     -1,     -1,     -1,     -1 },
+	{ NULL,               "spchess",      NULL,           SPTAG(4),     1,          1,          0,         -1,      -1,     -1,     -1,     -1,     -1 },
 };
-
 
 /* layout(s) */
 static const float mfact     = 0.50; /* factor of master area size [0.05..0.95] */
@@ -134,6 +133,10 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static char dmenuprompt[] = "Search: ";
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-l", "10", "-p", dmenuprompt, NULL };
 static const char *termcmd[]  = { "st", NULL };
+static const char *browser[]  = { "brave", NULL };
+static const char *browserAlt[]  = { "qutebrowser", NULL };
+static const char *filemanager[] = { "thunar", NULL };
+static const char *filemanagerAlt[] = { "st -e yazi", NULL };
 
 #include "movestack.c"
 static const Key keys[] = {
@@ -200,15 +203,19 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,               -1,        XK_r,      quit,           {1} }, 
 	{ MODKEY,                         -1,        XK_s,      togglesticky,   {0} },
 
-  // Scratchpads
-  { 0,                              -1,        XK_F12,    togglescratch,          {.ui = 0} },
-  { MODKEY|ShiftMask,               -1,        XK_m,      togglescratch,          {.ui = 1} },
-  { MODKEY,                         -1,        XK_c,      togglescratch,          {.ui = 2} },
-  { MODKEY|Mod1Mask,                -1,        XK_n,      togglescratch,          {.ui = 3} },
-//  { 0,                            -1,          XK_F11,    togglescratch,          {.ui = 4} },
+// Scratchpads
+  { 0,                              -1,        XK_F12,    togglescratch,  {.ui = 0} },
+  { MODKEY|ShiftMask,               -1,        XK_m,      togglescratch,  {.ui = 1} },
+  { MODKEY,                         -1,        XK_c,      togglescratch,  {.ui = 2} },
+  { MODKEY|Mod1Mask,                -1,        XK_n,      togglescratch,  {.ui = 3} },
+  { 0,                            -1,          XK_F11,    togglescratch, {.ui = 4} },
 
-	{ MODKEY,                       XK_a,       XK_d,      spawn,          {.v = dmenucmd } },
-	{ MODKEY,                       XK_a,       XK_t,      spawn,          {.v = termcmd } },
+//  Main Keybinds
+  { MODKEY|ShiftMask,               -1,        XK_n,       spawn,         {.v = filemanager} },
+
+//  Examples of Keychain Commands
+//	{ MODKEY,                       XK_a,       XK_d,      spawn,          {.v = dmenucmd } },
+//	{ MODKEY,                       XK_a,       XK_t,      spawn,          {.v = termcmd } },
 };
 
 /* button definitions */

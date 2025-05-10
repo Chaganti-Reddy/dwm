@@ -409,38 +409,42 @@ applyrules(Client *c)
 		&& (!r->class || strstr(class, r->class))
 		&& (!r->instance || strstr(instance, r->instance)))
 		{
-			c->isterminal     = r->isterminal;
-			c->noswallow      = r->noswallow;
-			c->isfloating     = r->isfloating;
-			c->tags          |= r->tags;
-			c->floatborderpx  = r->floatborderpx;
+			c->isterminal = r->isterminal;
+			c->noswallow  = r->noswallow;
+			c->isfloating = r->isfloating;
+			c->tags |= r->tags;
 
-			/* Assign monitor first */
-			for (m = mons; m && m->num != r->monitor; m = m->next);
-			if (m)
-				c->mon = m;
-
-			/* Apply floating geometry if applicable */
+			/* floatrules patch */
+			c->floatborderpx = r->floatborderpx;
 			if (r->isfloating) {
-				c->x = r->floatx;
-				c->y = r->floaty;
-				c->w = r->floatw;
-				c->h = r->floath;
+				if (r->floatx != -1)
+					c->x = r->floatx;
+				if (r->floaty != -1)
+					c->y = r->floaty;
+				if (r->floatw != -1)
+					c->w = r->floatw;
+				if (r->floath != -1)
+					c->h = r->floath;
 			}
 
-			/* Special handling for centered floating scratchpad tags */
-			if ((r->tags & SPTAGMASK) && r->isfloating) {
+			/* default centering for scratchpads if no float pos given */
+			if ((r->tags & SPTAGMASK) && r->isfloating
+			&& r->floatx == -1 && r->floaty == -1) {
 				c->x = c->mon->wx + (c->mon->ww / 2 - WIDTH(c) / 2);
 				c->y = c->mon->wy + (c->mon->wh / 2 - HEIGHT(c) / 2);
 			}
+
+			for (m = mons; m && m->num != r->monitor; m = m->next);
+			if (m)
+				c->mon = m;
 		}
 	}
+
 	if (ch.res_class)
 		XFree(ch.res_class);
 	if (ch.res_name)
 		XFree(ch.res_name);
 
-	/* fallback to currently selected tag if none was set */
 	c->tags = c->tags & TAGMASK
 		? c->tags & TAGMASK
 		: (c->mon->tagset[c->mon->seltags] & ~SPTAGMASK);
@@ -1290,7 +1294,7 @@ grabkeys(void)
 		unsigned int modifiers[] = { 0, LockMask, numlockmask, numlockmask|LockMask };
 		int start, end, skip;
 		KeySym *syms;
-		KeyCode code;
+		KeyCode chain;
 
 		XUngrabKey(dpy, AnyKey, AnyModifier, root);
 		XDisplayKeycodes(dpy, &start, &end);
@@ -1302,15 +1306,19 @@ grabkeys(void)
 			for (i = 0; i < LENGTH(keys); i++) {
 				/* skip modifier codes, we do that ourselves */
 				if (keys[i].keysym == syms[(k - start) * skip]) {
-					KeySym grab_sym = (keys[i].chain != NoSymbol) ? keys[i].chain : keys[i].keysym;
-					code = XKeysymToKeycode(dpy, grab_sym);
-					if (code) {
-						for (j = 0; j < LENGTH(modifiers); j++) {
-							XGrabKey(dpy, code,
-							         keys[i].mod | modifiers[j],
-							         root, True,
-							         GrabModeAsync, GrabModeAsync);
-						}
+					KeyCode code = k;
+
+					/* handle chained keys */
+					if (keys[i].chain != -1 &&
+					    (chain = XKeysymToKeycode(dpy, keys[i].chain))) {
+						code = chain;
+					}
+
+					for (j = 0; j < LENGTH(modifiers); j++) {
+						XGrabKey(dpy, code,
+						         keys[i].mod | modifiers[j],
+						         root, True,
+						         GrabModeAsync, GrabModeAsync);
 					}
 				}
 			}
@@ -1318,7 +1326,6 @@ grabkeys(void)
 		XFree(syms);
 	}
 }
-
 
 void
 incnmaster(const Arg *arg)

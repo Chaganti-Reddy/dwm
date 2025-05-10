@@ -1,10 +1,27 @@
 --- dwm.c
 +++ dwm.c
-@@ -211,6 +211,7 @@ static void tagmon(const Arg *arg);
+@@ -130,6 +130,7 @@ struct Monitor {
+ 	Monitor *next;
+ 	Window barwin;
+ 	const Layout *lt[2];
++	unsigned int alttag;
+ };
+ 
+ typedef struct {
+@@ -211,6 +213,7 @@ static void spawn(const Arg *arg);
+ static void tag(const Arg *arg);
+ static void tagmon(const Arg *arg);
  static void tile(Monitor *);
++static void togglealttag(const Arg *arg);
  static void togglebar(const Arg *arg);
  static void togglefloating(const Arg *arg);
-+static void togglefullscr(const Arg *arg);
  static void toggletag(const Arg *arg);
- static void toggleview(const Arg *arg);
- static void unfocus(Client *c, int setfocus);
+@@ -701,7 +705,7 @@ dirtomon(int dir)
+ void
+ drawbar(Monitor *m)
+ {
+-	int x, w, tw = 0;
++	int x, w, wdelta, tw = 0;
+ 	int boxs = drw->fonts->h / 9;
+ 	int boxw = drw->fonts->h / 6 + 2;
+ 	unsigned int i, occ = 0, urg = 0;
